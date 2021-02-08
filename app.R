@@ -1,0 +1,68 @@
+
+#loading some baseline stuff
+library(shiny)
+library(ggplot2)
+library(here)
+library(plotly)
+library(ggpubr)
+library(jpeg)
+library(ggimage)
+
+theme_meg <- function () {
+  theme_bw(base_family="Times") %+replace%
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+          legend.title=element_blank(), legend.text=element_text(size=9),
+          axis.text.x=element_text(size=10, face="bold"),axis.ticks.length.y=unit(-10, "pt"),
+          axis.text.y.left=element_text(margin= margin(r=12), size=10, face="bold", color="black"),
+          axis.text.y.right = element_blank(),
+          plot.margin=grid::unit(c(0,8,0,5),"mm"))
+}
+
+img = "http://phylopic.org/assets/images/submissions/bf5fe2c5-1247-4ed9-93e2-d5af255ec462.512.png"
+
+
+
+#ok so first let's do the ui and figure out what kind of layout to have -sidebar panel
+
+ui <- fluidPage(
+  titlePanel("The Role of DIC and pH in Copper Pipes"),
+  sidebarLayout(
+    sidebarPanel(
+      sliderInput("pH","pH", min=6,
+                  max =9, value=7.5,step=.25),
+      sliderInput("DIC","DIC (mg C/L)", min=0,
+                  max =150, value=75,step=10)
+
+    ),#this closes sidebar panel
+    mainPanel(
+      plotOutput("graph"),
+      imageOutput("image")
+    )#this closes main panel
+  )#this closes sidebar layout
+)#this closes fluid page
+
+server <- function(input, output, session){
+  output$graph <- renderPlot({
+    p <- ggplot()+
+      geom_point(aes(x=input$pH, y=input$DIC), shape=23, size=3, fill="blue")+
+      scale_y_continuous(limits=c(0,150),breaks = seq(0, 150, 25))+
+      scale_x_continuous(limits=c(6,9), breaks=seq(6,9,.5))+
+      labs(x="pH", y="DIC (mg C/L)")+
+      theme_meg()
+    ggbackground(p, img)
+  })
+  output$image <- renderImage({
+    list(src = "pitting.png",
+         contentType = 'image/png',
+         width = 400,
+         height = 300,
+         alt = "",
+         deleteFILE=FALSE)
+  })
+}#closes server
+
+shinyApp(ui, server)
+
+
+
+
