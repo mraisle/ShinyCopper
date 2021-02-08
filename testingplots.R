@@ -13,9 +13,13 @@ library(ggimage)
 # Download and read sample image (readJPEG doesn't work with urls)
 url <- "http://mathworld.wolfram.com/images/gifs/rabbduck.jpg"
 download.file(url, destfile = "rabbduck.jpg")
-img <- readJPEG("rabbduck.jpg")
+img <- "rabbduck.jpg"
 
-img = "http://phylopic.org/assets/images/submissions/bf5fe2c5-1247-4ed9-93e2-d5af255ec462.512.png"
+img3 = "http://phylopic.org/assets/images/submissions/bf5fe2c5-1247-4ed9-93e2-d5af255ec462.512.png"
+
+img2 = "background2.png"
+
+img2 <- readJPEG("rabbduck.jpg")
 
 birdman <- ggplot(iris, aes(Species, Sepal.Length)) +
   background_image(img) +
@@ -25,7 +29,7 @@ birdman2 <- ggplot(iris, aes(Species, Sepal.Length)) +
   geom_boxplot(aes(fill = Species))
 
 
-birdman3 <- ggbackground(birdman2, img)
+birdman3 <- ggbackground(birdman2, img2)
 
 birdman3
 
